@@ -173,3 +173,136 @@
     align-items: center;
     justify-content: space-between;
 }
+.price-discount {
+    display: flex;
+    flex-direction: column;
+}
+
+.original-price {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-decoration: line-through;
+}
+
+.discounted-price {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.discount-badge {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.listing-action {
+    margin-top: var(--spacing-md);
+}
+
+.view-all-container {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+}
+
+/* Impact Section */
+.impact {
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-xxl) 0;
+    text-align: center;
+}
+
+.impact .section-title {
+    color: white;
+}
+
+.impact .section-title::after {
+    background-color: white;
+}
+
+.impact-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-lg);
+}
+
+.stat {
+    padding: var(--spacing-lg);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    transition: transform var(--transition-normal);
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+}
+
+.stat h3 {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-xs);
+    color: white;
+}
+
+.stat p {
+    font-size: var(--font-size-md);
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .hero h1 {
+        font-size: 2.75rem;
+    }
+    
+    .impact-stats {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .stat h3 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .hero h1 {
+        font-size: 2.25rem;
+    }
+    
+    .hero p {
+        font-size: var(--font-size-base);
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        align-items: center;
+    }
+    
+    .hero-buttons .btn {
+        width: 80%;
+    }
+}
+
+@media (max-width: 576px) {
+    .steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .impact-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+}
