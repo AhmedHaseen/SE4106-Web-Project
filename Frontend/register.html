@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – SaveBite</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <link 
+    rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+  <!-- HEADER / NAVIGATION -->
+  <header id="main-header">
+    <div class="container header-container">
+      <div class="logo">
+        <a href="index.html">
+          <h1><span class="highlight">Save</span>Bite</h1>
+        </a>
+      </div>
+      <nav id="main-nav">
+        <button class="mobile-menu-btn" id="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="listings.html">Food Listings</a></li>
+          <li id="dashboard-link" class="auth-required business-only">
+            <a href="dashboard.html">Dashboard</a>
+          </li>
+          <li id="admin-link" class="auth-required admin-only">
+            <a href="admin.html">Admin Panel</a>
+          </li>
+          <li id="cart-link" class="auth-required customer-only">
+            <a href="cart.html">
+              Cart <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
+          <li id="login-link" class="auth-not-required">
+            <a href="login.html">Login</a>
+          </li>
+          <li id="register-link" class="auth-not-required">
+            <a href="register.html" class="active">Register</a>
+          </li>
+          <li id="logout-link" class="auth-required">
+            <a href="#" id="logout-btn">Logout</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+  </body>
+</html>
