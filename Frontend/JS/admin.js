@@ -1,5 +1,5 @@
 /**
- * Admin functionality for SaveBite application
+ * Admin functionality for our application
  */
 import apiService from "./api.js";
 import authService from "./auth.js";
@@ -12,7 +12,7 @@ import {
 } from "./utils.js";
 
 /**
- * AdminService class for handling admin-related operations
+ * AdminService class for handling admin's operations
  */
 class AdminService {
   constructor() {
