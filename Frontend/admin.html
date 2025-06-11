@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel – SaveBite</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- === HEADER / NAVIGATION === -->
+    <header id="main-header">
+      <div class="container header-container">
+        <div class="logo">
+          <a href="index.html">
+            <h1><span class="highlight">Save</span>Bite</h1>
+          </a>
+        </div>
+        <nav id="main-nav">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="listings.html">Food Listings</a></li>
+            <!-- Dashboard is visible to both business AND admin -->
+            <li id="dashboard-link" class="auth-required business-only admin-only">
+              <a href="dashboard.html">Dashboard</a>
+            </li>
+            <!-- Admin Panel is visible only to admins -->
+            <li id="admin-link" class="auth-required admin-only">
+              <a href="admin.html" class="active">Admin Panel</a>
+            </li>
+            <!-- Cart is visible only to customers -->
+            <li id="cart-link" class="auth-required customer-only">
+              <a href="cart.html"
+                >Cart <span id="cart-count" class="cart-count">0</span></a
+              >
+            </li>
+            <!-- Login/Register are shown when NOT logged in -->
+            <li id="login-link" class="auth-not-required">
+              <a href="login.html">Login</a>
+            </li>
+            <li id="register-link" class="auth-not-required">
+              <a href="register.html">Register</a>
+            </li>
+            <!-- Logout is shown only after login -->
+            <li id="logout-link" class="auth-required">
+              <a href="#" id="logout-btn">Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- === ADMIN LAYOUT === -->
+    <div class="admin-container">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar">
+        <div class="sidebar-user">
+          <div class="user-avatar">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <div class="user-info">
+            <h3 id="admin-name">Admin User</h3>
+            <p id="admin-email">admin@example.com</p>
+            <span class="admin-badge">Administrator</span>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active" data-tab="dashboard">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </li>
+            <li data-tab="users"><i class="fas fa-users"></i> Users</li>
+            <li data-tab="listings"><i class="fas fa-list"></i> Listings</li>
+            <li data-tab="orders">
+              <i class="fas fa-shopping-bag"></i> Orders
+            </li>
+            <li data-tab="reports"><i class="fas fa-chart-bar"></i> Reports</li>
+            <li data-tab="settings"><i class="fas fa-cog"></i> Settings</li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="admin-content">
+        <!-- Dashboard Tab -->
+        <section id="dashboard" class="admin-tab active">
+          <h2>Admin Dashboard</h2>
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-users">0</h3>
+                <p>Total Users</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-store"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-businesses">0</h3>
+                <p>Businesses</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-apple-alt"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-listings">0</h3>
+                <p>Active Listings</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-orders">0</h3>
+                <p>Orders Placed</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="charts-container">
+            <div class="chart-card">
+              <h3>Food Saved by Category</h3>
+              <div class="chart-placeholder">
+                <div class="chart-bars">
+                  <div
+                    class="chart-bar"
+                    style="height: 70%"
+                    data-label="Meals"
+                    data-value="420 kg"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 45%"
+                    data-label="Bakery"
+                    data-value="270 kg"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 85%"
+                    data-label="Produce"
+                    data-value="510 kg"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 30%"
+                    data-label="Dairy"
+                    data-value="180 kg"
+                  ></div>
+                  <div
+                    class="chart-bar"
+                    style="height: 20%"
+                    data-label="Other"
+                    data-value="120 kg"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <h3>Monthly Orders</h3>
+              <div class="chart-placeholder">
+                <div class="chart-line">
+                  <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+                    <polyline
+                      points="0,150 50,120 100,100 150,80 200,40 250,60 300,30"
+                      fill="none"
+                      stroke="#2E7D32"
+                      stroke-width="3"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-activity">
+            <h3>Recent System Activity</h3>
+            <div class="activity-list" id="admin-activity-list">
+              <!-- Will be populated dynamically by admin.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Users Tab -->
+        <section id="users" class="admin-tab">
+          <div class="tab-header">
+            <h2>User Management</h2>
+          </div>
+
+          <div class="users-controls">
+            <div class="search-bar">
+              <input
+                type="text"
+                id="users-search"
+                placeholder="Search users..."
+              />
+              <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="filter-select">
+              <select id="users-filter">
+                <option value="all">All Users</option>
+                <option value="customers">Customers</option>
+                <option value="businesses">Businesses</option>
+                <option value="admins">Admins</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="users-table-container">
+            <table class="users-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body">
+                <!-- Populated dynamically by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Listings Tab -->
+        <section id="listings" class="admin-tab">
+          <div class="tab-header">
+            <h2>All Listings</h2>
+          </div>
+
+          <div class="listings-controls">
+            <div class="search-bar">
+              <input
+                type="text"
+                id="admin-listings-search"
+                placeholder="Search listings..."
+              />
+              <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="filter-select">
+              <select id="admin-listings-filter">
+                <option value="all">All Listings</option>
+                <option value="active">Active</option>
+                <option value="sold">Sold Out</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-listings-container" id="admin-listings-container">
+            <!-- Populated dynamically by admin.js -->
+          </div>
+        </section>
+
+        <!-- Orders Tab -->
+        <section id="orders" class="admin-tab">
+          <div class="tab-header">
+            <h2>All Orders</h2>
+          </div>
+
+          <div class="orders-controls">
+            <div class="search-bar">
+              <input
+                type="text"
+                id="admin-orders-search"
+                placeholder="Search orders..."
+              />
+              <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="filter-select">
+              <select id="admin-orders-filter">
+                <option value="all">All Orders</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-orders-container" id="admin-orders-container">
+            <!-- Populated dynamically by admin.js -->
+          </div>
+        </section>
+
+        <!-- Reports Tab -->
+        <section id="reports" class="admin-tab">
+          <h2>Reports</h2>
+
+          <div class="reports-filters">
+            <div class="date-range">
+              <label for="date-from">From:</label>
+              <input type="date" id="date-from" />
+              <label for="date-to">To:</label>
+              <input type="date" id="date-to" />
+              <button id="apply-date-range" class="btn btn-small">Apply</button>
+            </div>
+          </div>
+
+          <div class="reports-grid">
+            <div class="report-card">
+              <h3>Food Waste Reduction</h3>
+              <div class="report-value">
+                <span id="food-waste-reduced">1,500</span>
+                <span class="report-unit">kg</span>
+              </div>
+              <div class="report-comparison positive">
+                <i class="fas fa-arrow-up"></i> 15% from last month
+              </div>
+            </div>
+
+            <div class="report-card">
+              <h3>CO₂ Emissions Avoided</h3>
+              <div class="report-value">
+                <span id="co2-emissions-avoided">3,750</span>
+                <span class="report-unit">kg</span>
+              </div>
+              <div class="report-comparison positive">
+                <i class="fas fa-arrow-up"></i> 12% from last month
+              </div>
+            </div>
+
+            <div class="report-card">
+              <h3>Total Revenue</h3>
+              <div class="report-value">
+                <span class="report-currency">$</span>
+                <span id="total-revenue">12,450</span>
+              </div>
+              <div class="report-comparison positive">
+                <i class="fas fa-arrow-up"></i> 8% from last month
+              </div>
+            </div>
+
+            <div class="report-card">
+              <h3>User Growth</h3>
+              <div class="report-value">
+                <span id="user-growth">245</span>
+                <span class="report-unit">new users</span>
+              </div>
+              <div class="report-comparison positive">
+                <i class="fas fa-arrow-up"></i> 5% from last month
+              </div>
+            </div>
+          </div>
+
+          <div class="detailed-reports">
+            <div class="detailed-report">
+              <h3>Top Businesses by Sales</h3>
+              <div class="report-table-container">
+                <table class="report-table">
+                  <thead>
+                    <tr>
+                      <th>Business</th>
+                      <th>Orders</th>
+                      <th>Items Sold</th>
+                      <th>Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody id="top-businesses-table">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="detailed-report">
+              <h3>Popular Food Categories</h3>
+              <div class="report-table-container">
+                <table class="report-table">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Items Sold</th>
+                      <th>% of Total</th>
+                    </tr>
+                  </thead>
+                  <tbody id="popular-categories-table">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="settings" class="admin-tab">
+          <h2>Admin Settings</h2>
+
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>General Settings</h3>
+              <form id="general-settings-form" class="settings-form">
+                <div class="form-group">
+                  <label for="site-name">Site Name</label>
+                  <input
+                    type="text"
+                    id="site-name"
+                    name="siteName"
+                    value="SaveBite"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="contact-email">Contact Email</label>
+                  <input
+                    type="email"
+                    id="contact-email"
+                    name="contactEmail"
+                    value="info@savebite.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="max-listing-days">Maximum Listing Days</label>
+                  <input
+                    type="number"
+                    id="max-listing-days"
+                    name="maxListingDays"
+                    value="7"
+                    min="1"
+                    max="30"
+                  />
+                </div>
+                <div class="form-action">
+                  <button type="submit" class="btn btn-primary">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="settings-card">
+              <h3>User Registration</h3>
+              <form id="registration-settings-form" class="settings-form">
+                <div class="form-group">
+                  <label class="switch-container">
+                    <input
+                      type="checkbox"
+                      id="allow-customer-registration"
+                      name="allowCustomerRegistration"
+                      checked
+                    />
+                    <span class="switch-slider"></span>
+                    Allow customer registration
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="switch-container">
+                    <input
+                      type="checkbox"
+                      id="allow-business-registration"
+                      name="allowBusinessRegistration"
+                      checked
+                    />
+                    <span class="switch-slider"></span>
+                    Allow business registration
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="switch-container">
+                    <input
+                      type="checkbox"
+                      id="require-email-verification"
+                      name="requireEmailVerification"
+                    />
+                    <span class="switch-slider"></span>
+                    Require email verification
+                  </label>
+                </div>
+                <div class="form-action">
+                  <button type="submit" class="btn btn-primary">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h3>Add Administrator</h3>
+            <form id="add-admin-form" class="settings-form">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="admin-full-name">Full Name</label>
+                  <input
+                    type="text"
+                    id="admin-full-name"
+                    name="fullName"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="admin-email">Email</label>
+                  <input type="email" id="admin-email" name="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="admin-password">Password</label>
+                  <input
+                    type="password"
+                    id="admin-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="admin-confirm-password">Confirm Password</label>
+                  <input
+                    type="password"
+                    id="admin-confirm-password"
+                    name="confirmPassword"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-action">
+                <button type="submit" class="btn btn-primary">
+                  Add Administrator
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- User Details Modal (unchanged) -->
+    <div id="user-details-modal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <div class="user-details" id="user-details">
+          <!-- Populated dynamically by admin.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- === FOOTER === -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2><span class="highlight">Save</span>Bite</h2>
+            <p>Fighting food waste, one bite at a time.</p>
+          </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="listings.html">Food Listings</a></li>
+              <li><a href="about.html">About Us</a></li>
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p>
+              <i class="fas fa-envelope"></i
+              ><a href="mailto:haseen2002hsn@gmail.com"
+                >haseen2002hsn@gmail.com</a
+              >
+            </p>
+            <p>
+              <i class="fas fa-phone"></i
+              ><a href="tel:+94767502206">+94 767502206</a>
+            </p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 SaveBite. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- === SCRIPTS === -->
+    <!-- 1) auth.js toggles the nav links and handles "Logout" -->
+    <script src="js/auth.js" type="module"></script>
+    <!-- 2) api.js or any helper functions (optional) -->
+    <script src="js/api.js" type="module"></script>
+    <!-- 3) admin.js drives the dynamic data in the admin panel -->
+    <script src="js/admin.js" type="module"></script>
+  </body>
+</html>
