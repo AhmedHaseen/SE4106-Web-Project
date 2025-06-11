@@ -1,0 +1,106 @@
+/* Listings Page Styling */
+.listings-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-xl) 0;
+    text-align: center;
+}
+
+.listings-header h1 {
+    margin-bottom: var(--spacing-xs);
+    color: white;
+}
+
+.listings-header p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0;
+    font-size: var(--font-size-md);
+}
+
+.listings-content {
+    padding: var(--spacing-xl) 0;
+}
+
+/* Filters section */
+.listings-filters {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-md);
+    background-color: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.search-bar {
+    display: flex;
+    margin-bottom: var(--spacing-md);
+}
+
+.search-bar input {
+    flex-grow: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.search-bar button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-top-right-radius: var(--border-radius-md);
+    border-bottom-right-radius: var(--border-radius-md);
+    padding: 0 var(--spacing-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.search-bar button:hover {
+    background-color: var(--primary-dark);
+}
+
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.filter-group label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.filter-group select {
+    min-width: 150px;
+}
+
+/* Listings grid */
+.listings-results {
+    position: relative;
+}
+
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xxl) 0;
+}
+
+.no-results i {
+    font-size: 48px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.no-results h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.no-results p {
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
