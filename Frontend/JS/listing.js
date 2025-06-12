@@ -676,3 +676,290 @@ class ListingService {
       return false;
     }
   }
+/*
+   * Render business listings in a dashboard table
+   * @param {HTMLElement} tableBody - <tbody> element to populate
+   */
+  async renderBusinessListings(tableBody) {
+    if (!tableBody) return;
+
+    // Loading spinner
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" class="text-center">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    try {
+      const currentUser = authService.getCurrentUser();
+      if (
+        !currentUser ||
+        (currentUser.role !== "business" && currentUser.role !== "admin")
+      ) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center">
+              <p>Only businesses can view their listings</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Fetch listings belonging to this business
+      const listings = await apiService.getListings({
+        businessId: currentUser.id,
+      });
+
+      if (!listings || listings.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center">
+              <p>No listings found. Create your first listing to get started.</p>
+            </td>
+          </tr>
+        `;
+        const noListings = document.getElementById("no-listings");
+        if (noListings) {
+          noListings.style.display = "block";
+        }
+        return;
+      }
+
+      // Hide any “no listings” container if it exists
+      const noListings = document.getElementById("no-listings");
+      if (noListings) {
+        noListings.style.display = "none";
+      }
+
+      let tableRows = "";
+      listings.forEach((listing) => {
+        let statusClass = "bg-success";
+        if (listing.status === "sold-out") {
+          statusClass = "bg-warning";
+        } else if (
+          listing.status === "expired" ||
+          isExpired(listing.expiryDate)
+        ) {
+          statusClass = "bg-error";
+        }
+
+        let statusText =
+          listing.status.charAt(0).toUpperCase() + listing.status.slice(1);
+        if (
+          listing.status === "active" &&
+          isExpired(listing.expiryDate)
+        ) {
+          statusText = "Expired";
+        }
+
+        const expiryText = isExpired(listing.expiryDate)
+          ? "Expired"
+          : formatDate(listing.expiryDate, true);
+
+        tableRows += `
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <img src="${listing.imageUrl}" alt="${listing.foodName}" width="40" height="40" style="object-fit: cover; border-radius: 4px; margin-right: 8px;">
+                ${listing.foodName}
+              </div>
+            </td>
+            <td>${formatPrice(listing.discountedPrice)} <span class="original-price">${formatPrice(listing.originalPrice)}</span></td>
+            <td>${listing.quantity}</td>
+            <td>${expiryText}</td>
+            <td><span class="user-status ${statusClass}">${statusText}</span></td>
+            <td>
+              <div class="listing-actions">
+                <button class="edit" data-id="${listing._id}"><i class="fas fa-edit"></i></button>
+                <button class="delete" data-id="${listing._id}"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tableBody.innerHTML = tableRows;
+
+      // Wire up the buttons
+      const editButtons = tableBody.querySelectorAll(".edit");
+      const deleteButtons = tableBody.querySelectorAll(".delete");
+
+      editButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          const listingId = button.getAttribute("data-id");
+          this.showEditListingModal(listingId);
+        });
+      });
+      deleteButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          const listingId = button.getAttribute("data-id");
+          const success = await this.deleteListing(listingId);
+          if (success) {
+            this.renderBusinessListings(tableBody);
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error rendering business listings:", error);
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="6" class="text-center">
+            <p>Error loading listings. Please try again later.</p>
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  /*
+   * Show edit listing modal
+   * @param {string} listingId - ID of listing to edit
+   */
+  async showEditListingModal(listingId) {
+    const modal = document.getElementById("edit-listing-modal");
+    const form = document.getElementById("edit-listing-form");
+    if (!modal || !form) {
+      console.error("Edit listing modal or form not found");
+      return;
+    }
+
+    try {
+      const listing = await apiService.getListingById(listingId);
+      if (!listing) {
+        showNotification("Listing not found", "error");
+        return;
+      }
+
+      this.renderListingForm(form, listing);
+      openModal(modal);
+
+      const deleteBtn = document.getElementById("delete-listing");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", async () => {
+          const success = await this.deleteListing(listingId);
+          if (success) {
+            modal.querySelector(".modal-close").click();
+            const tableBody = document.getElementById("listings-table-body");
+            if (tableBody) {
+              this.renderBusinessListings(tableBody);
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error showing edit listing modal:", error);
+      showNotification("Error loading listing details", "error");
+    }
+  }
+} 
+
+const listingService = new ListingService();
+
+// Set up listings page if on that page
+document.addEventListener("DOMContentLoaded", () => {
+  // Public listings page
+  const listingsContainer = document.getElementById("listings-container");
+  if (listingsContainer) {
+    listingService.setupFilters();
+    listingService.renderListings(listingsContainer);
+  }
+
+  // Featured listings on home page (if present)
+  const featuredListingsContainer = document.getElementById(
+    "featured-listings-container"
+  );
+  if (featuredListingsContainer) {
+    listingService.renderListings(featuredListingsContainer, {
+      limit: 3,
+      filters: { sortBy: "discount" },
+    });
+  }
+
+  // Listing detail modal close behavior
+  const listingModal = document.getElementById("listing-modal");
+  if (listingModal) {
+    const closeBtn = listingModal.querySelector(".modal-close");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        listingModal.classList.remove("show");
+        document.body.style.overflow = "";
+      });
+    }
+    listingModal.addEventListener("click", (e) => {
+      if (e.target === listingModal) {
+        listingModal.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+    });
+  }
+
+  // Business dashboard: render business listings table
+  const listingsTableBody = document.getElementById("listings-table-body");
+  if (listingsTableBody) {
+    listingService.renderBusinessListings(listingsTableBody);
+  }
+
+  // Listing form (Add)
+  const listingForm = document.getElementById("listing-form");
+  if (listingForm) {
+    listingForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const success = await listingService.submitListingForm(listingForm, "add");
+      if (success) {
+        listingForm.reset();
+        const tb = document.getElementById("listings-table-body");
+        if (tb) listingService.renderBusinessListings(tb);
+        const listingsTab = document.querySelector('[data-tab="listings"]');
+        if (listingsTab) listingsTab.click();
+      }
+    });
+  }
+
+  // Edit listing form
+  const editListingForm = document.getElementById("edit-listing-form");
+  if (editListingForm) {
+    editListingForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const success = await listingService.submitListingForm(editListingForm, "edit");
+      if (success) {
+        const modal = document.getElementById("edit-listing-modal");
+        if (modal) modal.querySelector(".modal-close").click();
+        const tb = document.getElementById("listings-table-body");
+        if (tb) listingService.renderBusinessListings(tb);
+      }
+    });
+  }
+
+  // “Add Listing” button in dashboard
+  const addListingBtn = document.getElementById("add-listing-btn");
+  if (addListingBtn) {
+    addListingBtn.addEventListener("click", () => {
+      const addTab = document.querySelector('[data-tab="add-listing"]');
+      if (addTab) addTab.click();
+    });
+  }
+
+  // “Create First Listing” (if no listings exist yet)
+  const createFirstListingBtn = document.getElementById("create-first-listing");
+  if (createFirstListingBtn) {
+    createFirstListingBtn.addEventListener("click", () => {
+      const addTab = document.querySelector('[data-tab="add-listing"]');
+      if (addTab) addTab.click();
+    });
+  }
+  const listingCancelBtn = document.getElementById("listing-cancel");
+  if (listingCancelBtn) {
+    listingCancelBtn.addEventListener("click", () => {
+      const listingsTab = document.querySelector('[data-tab="listings"]');
+      if (listingsTab) listingsTab.click();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+});
+
+export default listingService;
