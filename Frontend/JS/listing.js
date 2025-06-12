@@ -24,7 +24,7 @@ class ListingService {
     };
   }
 
-  /**
+  /*
    * Render listings in a container
    * @param {HTMLElement} container - Container to render listings in
    * @param {Object} options - Options for rendering
@@ -150,7 +150,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Add event listeners to listing elements
    * @param {HTMLElement} container - Container with listing elements
    * @param {boolean} showAddToCart - Whether add-to-cart buttons are present
@@ -187,7 +187,7 @@ class ListingService {
       });
     });
   }
-/**
+/*
    * Show listing detail in a modal
    * @param {string} listingId - ID of listing to show
    */
@@ -378,7 +378,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Add a listing to the cart
    * @param {string} listingId - ID of listing to add
    * @param {number} quantity - Quantity to add (default: 1)
@@ -446,3 +446,233 @@ class ListingService {
     showNotification("Error adding item to cart", "error");
   }
 }
+/*
+   * Set up filter controls for listings page
+   */
+  setupFilters() {
+    const categoryFilter = document.getElementById("category-filter");
+    const sortByFilter = document.getElementById("sort-by");
+    const searchInput = document.getElementById("search-input");
+    const searchBtn = document.getElementById("search-btn");
+    const resetBtn = document.getElementById("filter-reset");
+
+    if (!categoryFilter || !sortByFilter || !searchInput || !searchBtn) {
+      return;
+    }
+
+    categoryFilter.addEventListener("change", () => {
+      this.currentFilters.category = categoryFilter.value;
+      this.applyFilters();
+    });
+    sortByFilter.addEventListener("change", () => {
+      this.currentFilters.sortBy = sortByFilter.value;
+      this.applyFilters();
+    });
+    searchBtn.addEventListener("click", () => {
+      this.currentFilters.search = searchInput.value.trim();
+      this.applyFilters();
+    });
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        this.currentFilters.search = searchInput.value.trim();
+        this.applyFilters();
+      }
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        categoryFilter.value = "all";
+        sortByFilter.value = "expiry";
+        searchInput.value = "";
+        this.currentFilters = { category: "all", sortBy: "expiry", search: "" };
+        this.applyFilters();
+      });
+    }
+  }
+
+  /**
+   * Apply current filters and re-render
+   */
+  applyFilters() {
+    const listingsContainer = document.getElementById("listings-container");
+    if (listingsContainer) {
+      this.renderListings(listingsContainer);
+    }
+  }
+
+  /*
+   * Format category name for display
+   * @param {string} category - Category slug
+   * @returns {string} Formatted category name
+   */
+  formatCategory(category) {
+    switch (category) {
+      case "meals":
+        return "Prepared Meals";
+      case "bakery":
+        return "Bakery";
+      case "produce":
+        return "Produce";
+      case "dairy":
+        return "Dairy";
+      case "other":
+        return "Other";
+      default:
+        return category.charAt(0).toUpperCase() + category.slice(1);
+    }
+  }
+
+  /*
+   * Render a listing form (add/edit)
+   * @param {HTMLFormElement} form - Form element
+   * @param {Object} listing - Listing data for editing (null for new listing)
+   */
+  renderListingForm(form, listing = null) {
+    if (!form) return;
+
+    if (listing) {
+      // Editing an existing listing
+      if (form.id === "edit-listing-form") {
+        document.getElementById("edit-listing-id").value = listing._id;
+      }
+      form.elements["foodName"].value = listing.foodName;
+      form.elements["category"].value = listing.category;
+      form.elements["originalPrice"].value = listing.originalPrice;
+      form.elements["discountedPrice"].value = listing.discountedPrice;
+      form.elements["quantity"].value = listing.quantity;
+
+      // Convert expiryDate to YYYY-MM-DDTHH:MM
+      const expiryDate = new Date(listing.expiryDate);
+      const formattedDate = expiryDate.toISOString().slice(0, 16);
+      form.elements["expiryDate"].value = formattedDate;
+
+      form.elements["description"].value = listing.description;
+      form.elements["imageUrl"].value = listing.imageUrl;
+      form.elements["pickupOnly"].checked = listing.pickupOnly;
+      form.elements["pickupAddress"].value = listing.pickupAddress;
+    } else {
+      // New listing: reset and set defaults
+      form.reset();
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setMinutes(tomorrow.getMinutes() - tomorrow.getTimezoneOffset());
+      form.elements["expiryDate"].value = tomorrow.toISOString().slice(0, 16);
+
+      // Pre-fill business address if available
+      const currentUser = authService.getCurrentUser();
+      if (currentUser && currentUser.businessAddress) {
+        form.elements["pickupAddress"].value = currentUser.businessAddress;
+      }
+    }
+  }
+
+  /*
+   * Submit a listing form (add or edit)
+   * @param {HTMLFormElement} form - Form element
+   * @param {string} mode - "add" or "edit"
+   */
+  async submitListingForm(form, mode = "add") {
+    try {
+      const currentUser = authService.getCurrentUser();
+      if (
+        !currentUser ||
+        (currentUser.role !== "business" && currentUser.role !== "admin")
+      ) {
+        showNotification("Only businesses can manage listings", "error");
+        return false;
+      }
+
+      const formData = new FormData(form);
+      const listingData = {
+        foodName: formData.get("foodName"),
+        category: formData.get("category"),
+        originalPrice: parseFloat(formData.get("originalPrice")),
+        discountedPrice: parseFloat(formData.get("discountedPrice")),
+        quantity: parseInt(formData.get("quantity")),
+        expiryDate: new Date(formData.get("expiryDate")).toISOString(),
+        description: formData.get("description"),
+        imageUrl: formData.get("imageUrl"),
+        pickupOnly: formData.get("pickupOnly") === "on",
+        pickupAddress: formData.get("pickupAddress"),
+      };
+
+      // Validate all required fields
+      for (const [key, value] of Object.entries(listingData)) {
+        if (value === "" || value === null || value === undefined) {
+          showNotification(`Please fill in all required fields`, "error");
+          return false;
+        }
+      }
+
+      // Discount must be < original
+      if (listingData.discountedPrice >= listingData.originalPrice) {
+        showNotification(
+          "Discounted price must be less than original price",
+          "error"
+        );
+        return false;
+      }
+
+      // Expiry date must be in future
+      const expiryDate = new Date(listingData.expiryDate);
+      const now = new Date();
+      if (expiryDate <= now) {
+        showNotification("Expiry date must be in the future", "error");
+        return false;
+      }
+
+      let result;
+      if (mode === "edit") {
+        const listingId = document.getElementById("edit-listing-id").value;
+        result = await apiService.updateListing(listingId, listingData);
+      } else {
+        result = await apiService.createListing(listingData);
+      }
+
+      if (result.success) {
+        showNotification(
+          mode === "edit"
+            ? "Listing updated successfully"
+            : "Listing created successfully",
+          "success"
+        );
+        return true;
+      } else {
+        showNotification(result.message || "Error saving listing", "error");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error submitting listing form:", error);
+      showNotification("Error saving listing", "error");
+      return false;
+    }
+  }
+
+  /*
+   * Delete a listing
+   * @param {string} listingId - ID of listing to delete
+   * @returns {Promise<boolean>}
+   */
+  async deleteListing(listingId) {
+    try {
+      if (
+        !confirm(
+          "Are you sure you want to delete this listing? This action cannot be undone."
+        )
+      ) {
+        return false;
+      }
+      const result = await apiService.deleteListing(listingId);
+      if (result.success) {
+        showNotification("Listing deleted successfully", "success");
+        return true;
+      } else {
+        showNotification(result.message || "Error deleting listing", "error");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      showNotification("Error deleting listing", "error");
+      return false;
+    }
+  }
