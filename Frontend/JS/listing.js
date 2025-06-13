@@ -1,3 +1,4 @@
+
 // /SaveBite-frontend/js/listing.js
 
 import apiService from "./api.js";
@@ -24,7 +25,7 @@ class ListingService {
     };
   }
 
-  /**
+  /*
    * Render listings in a container
    * @param {HTMLElement} container - Container to render listings in
    * @param {Object} options - Options for rendering
@@ -150,7 +151,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Add event listeners to listing elements
    * @param {HTMLElement} container - Container with listing elements
    * @param {boolean} showAddToCart - Whether add-to-cart buttons are present
@@ -187,8 +188,7 @@ class ListingService {
       });
     });
   }
-
-  /**
+/*
    * Show listing detail in a modal
    * @param {string} listingId - ID of listing to show
    */
@@ -379,7 +379,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Add a listing to the cart
    * @param {string} listingId - ID of listing to add
    * @param {number} quantity - Quantity to add (default: 1)
@@ -447,9 +447,7 @@ class ListingService {
     showNotification("Error adding item to cart", "error");
   }
 }
-
-
-  /**
+/*
    * Set up filter controls for listings page
    */
   setupFilters() {
@@ -503,7 +501,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Format category name for display
    * @param {string} category - Category slug
    * @returns {string} Formatted category name
@@ -525,7 +523,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Render a listing form (add/edit)
    * @param {HTMLFormElement} form - Form element
    * @param {Object} listing - Listing data for editing (null for new listing)
@@ -569,7 +567,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Submit a listing form (add or edit)
    * @param {HTMLFormElement} form - Form element
    * @param {string} mode - "add" or "edit"
@@ -651,7 +649,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Delete a listing
    * @param {string} listingId - ID of listing to delete
    * @returns {Promise<boolean>}
@@ -679,8 +677,7 @@ class ListingService {
       return false;
     }
   }
-
-  /**
+/*
    * Render business listings in a dashboard table
    * @param {HTMLElement} tableBody - <tbody> element to populate
    */
@@ -820,7 +817,7 @@ class ListingService {
     }
   }
 
-  /**
+  /*
    * Show edit listing modal
    * @param {string} listingId - ID of listing to edit
    */
@@ -860,7 +857,7 @@ class ListingService {
       showNotification("Error loading listing details", "error");
     }
   }
-}
+} 
 
 const listingService = new ListingService();
 

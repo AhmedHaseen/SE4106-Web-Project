@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SaveBite - Reduce Food Waste</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header id="main-header">
+      <div class="container header-container">
+        <div class="logo">
+          <a href="index.html">
+            <h1><span class="highlight">Save</span>Bite</h1>
+          </a>
+        </div>
+        <nav id="main-nav">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="listings.html">Food Listings</a></li>
+            <li
+              id="dashboard-link"
+              class="auth-required business-only admin-only"
+            >
+              <a href="dashboard.html">Dashboard</a>
+            </li>
+            <li id="admin-link" class="auth-required admin-only">
+              <a href="admin.html">Admin Panel</a>
+            </li>
+            <li id="cart-link" class="auth-required customer-only">
+              <a href="cart.html"
+                >Cart <span id="cart-count" class="cart-count">0</span></a
+              >
+            </li>
+            <li id="login-link" class="auth-not-required">
+              <a href="login.html">Login</a>
+            </li>
+            <li id="register-link" class="auth-not-required">
+              <a href="register.html">Register</a>
+            </li>
+            <li id="logout-link" class="auth-required">
+              <a href="#" id="logout-btn">Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Reduce Food Waste, Save Money</h1>
+          <p>
+            Connect with local businesses to purchase surplus food at discounted
+            prices.
+          </p>
+          <div class="hero-buttons">
+            <a href="listings.html" class="btn btn-primary">Browse Food</a>
+            <a href="register.html" class="btn btn-secondary">Join SaveBite</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-it-works">
+      <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-icon">
+              <i class="fas fa-store"></i>
+            </div>
+            <h3>Businesses Share</h3>
+            <p>
+              Restaurants and stores list surplus food that would otherwise go
+              to waste.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Customers Order</h3>
+            <p>
+              Browse discounted items from local businesses and place orders.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <i class="fas fa-leaf"></i>
+            </div>
+            <h3>Everyone Benefits</h3>
+            <p>
+              Save money, reduce waste, and help build a more sustainable
+              community.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="featured-listings">
+      <div class="container">
+        <h2 class="section-title">Featured Listings</h2>
+        <div class="listings-grid" id="featured-listings-container">
+          <!-- Listings will be populated dynamically -->
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+        </div>
+        <div class="view-all-container">
+          <a href="listings.html" class="btn btn-secondary"
+            >View All Listings</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section class="impact">
+      <div class="container">
+        <h2 class="section-title">Our Impact</h2>
+        <div class="impact-stats">
+          <div class="stat">
+            <h3 id="food-saved"></h3>
+            <p>Save Food Waste</p>
+          </div>
+          <div class="stat">
+            <h3 id="co2-reduced"></h3>
+            <p>CO₂ Reduced</p>
+          </div>
+          <div class="stat">
+            <h3 id="businesses"></h3>
+            <p>Partner Businesses</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2><span class="highlight">Save</span>Bite</h2>
+            <p>Fighting food waste, one bite at a time.</p>
+          </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="listings.html">Food Listings</a></li>
+              <li><a href="about.html">About Us</a></li>
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p>
+              <i class="fas fa-envelope"></i
+              ><a href="mailto:haseen2002hsn@gmail.com"
+                >savebitebusiness@gmail.com</a
+              >
+            </p>
+            <p><i class="fas fa-phone"></i><a href="tel:+">+94 767501100</a></p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 SaveBite. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/utils.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script src="js/api.js" type="module"></script>
+    <script src="js/listing.js" type="module"></script>
+    <script src="js/home.js" type="module"></script>
+  </body>
+</html>
+
