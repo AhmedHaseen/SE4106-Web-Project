@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart - SaveBite</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/cart.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header id="main-header">
+      <div class="container header-container">
+        <div class="logo">
+          <a href="index.html">
+            <h1><span class="highlight">Save</span>Bite</h1>
+          </a>
+        </div>
+        <nav id="main-nav">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="listings.html">Food Listings</a></li>
+            <li
+              id="dashboard-link"
+              class="auth-required business-only admin-only"
+            >
+              <a href="dashboard.html">Dashboard</a>
+            </li>
+            <li id="admin-link" class="auth-required admin-only">
+              <a href="admin.html">Admin Panel</a>
+            </li>
+            <li id="cart-link" class="auth-required customer-only">
+              <a href="cart.html" class="active"
+                >Cart <span id="cart-count" class="cart-count">0</span></a
+              >
+            </li>
+            <li id="login-link" class="auth-not-required">
+              <a href="login.html">Login</a>
+            </li>
+            <li id="register-link" class="auth-not-required">
+              <a href="register.html">Register</a>
+            </li>
+            <li id="logout-link" class="auth-required">
+              <a href="#" id="logout-btn">Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="cart-container">
+      <div class="container">
+        <h1>Your Cart</h1>
+
+        <div class="cart-content" id="cart-content">
+          <div class="cart-items" id="cart-items">
+            <!-- Cart items will be populated dynamically -->
+          </div>
+
+          <div class="cart-summary" id="cart-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-item">
+              <span>Subtotal</span>
+              <span id="subtotal">$0.00</span>
+            </div>
+            <div class="summary-item">
+              <span>Total Savings</span>
+              <span id="savings">$0.00</span>
+            </div>
+            <div class="summary-item">
+              <span>Estimated Tax</span>
+              <span id="tax">$0.00</span>
+            </div>
+            <div class="summary-item total">
+              <span>Total</span>
+              <span id="total">$0.00</span>
+            </div>
+
+            <button id="checkout-btn" class="btn btn-primary btn-block">
+              Proceed to Checkout
+            </button>
+            <button id="continue-shopping" class="btn btn-secondary btn-block">
+              Continue Shopping
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-cart" id="empty-cart" style="display: none">
+          <div class="empty-cart-icon">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <h2>Your cart is empty</h2>
+          <p>
+            Browse our listings to find delicious food at discounted prices.
+          </p>
+          <a href="listings.html" class="btn btn-primary">Browse Listings</a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+      <div class="modal-content">
+        <span id="checkout-close" class="modal-close" aria-label="Close Modal">&times;</span>
+
+        <h2>Complete Your Order</h2>
+
+        <form id="checkout-form" class="checkout-form">
+          <div class="form-section">
+            <h3>Contact Information</h3>
+            <div class="form-group">
+              <label for="checkout-name">Full Name</label>
+              <input type="text" id="checkout-name" name="name" required />
+            </div>
+            <div class="form-group">
+              <label for="checkout-email">Email</label>
+              <input type="email" id="checkout-email" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="checkout-phone">Phone Number</label>
+              <input type="tel" id="checkout-phone" name="phone" required />
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Pickup Details</h3>
+            <div class="pickup-options" id="pickup-options">
+              <!-- Pickup options will be populated dynamically -->
+            </div>
+
+            <div class="form-group">
+              <label for="pickup-time">Preferred Pickup Time</label>
+              <input
+                type="datetime-local"
+                id="pickup-time"
+                name="pickupTime"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="pickup-notes">Special Instructions</label>
+              <textarea id="pickup-notes" name="notes" rows="2"></textarea>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Order Summary</h3>
+            <div class="order-summary" id="order-summary">
+              <!-- Order summary will be populated dynamically -->
+            </div>
+          </div>
+
+          <div class="form-action">
+            <button type="submit" class="btn btn-primary btn-block">
+              Place Order
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="confirmation-modal" class="modal">
+      <div class="modal-content confirmation-content">
+        <span class="modal-close">&times;</span>
+        <div class="confirmation-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2>Order Placed Successfully!</h2>
+        <div class="confirmation-details">
+          <p>
+            Thank you for your order. You will receive a confirmation email
+            shortly.
+          </p>
+          <div class="order-info">
+            <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+            <p>
+              <strong>Pickup Location:</strong>
+              <span id="pickup-location"></span>
+            </p>
+            <p>
+              <strong>Pickup Time:</strong>
+              <span id="confirmation-pickup-time"></span>
+            </p>
+          </div>
+        </div>
+        <div class="confirmation-actions">
+          <a href="index.html" class="btn btn-secondary">Back to Home</a>
+          <a href="listings.html" class="btn btn-primary">Continue Shopping</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2><span class="highlight">Save</span>Bite</h2>
+            <p>Fighting food waste, one bite at a time.</p>
+          </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="listings.html">Food Listings</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-envelope"></i><a href="mailto:">haseen2002hsn@gmail.com</a></p>
+            <p><i class="fas fa-phone"></i><a href="tel:+">+94 767502206</a></p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 SaveBite. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/utils.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script src="js/api.js" type="module"></script>
+    <script src="js/cart.js" type="module"></script>
+  </body>
+</html>
