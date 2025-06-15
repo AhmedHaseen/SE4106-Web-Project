@@ -1,4 +1,4 @@
-
+// /SaveBite-backend/controllers/authController.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
@@ -9,7 +9,7 @@ const generateToken = (userId) => {
   });
 };
 
-// @desc    Register a new user
+//    Register a new user
 
 export const register = async (req, res) => {
   const { name, email, password, role, businessName, businessType } = req.body;
@@ -52,7 +52,7 @@ export const register = async (req, res) => {
   }
 };
 
-//     Authenticate user & get token
+//    Authenticate user & get token
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -77,7 +77,7 @@ export const login = async (req, res) => {
   }
 };
 
-//     Get current logged-in user data
+//    Get current logged-in user data
 
 export const getMe = async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
