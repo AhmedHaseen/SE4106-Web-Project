@@ -153,6 +153,21 @@
   <script src="js/utils.js" type="module"></script>
   <script src="js/api.js" type="module"></script>
   <script src="js/auth.js" type="module"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const passwordInput = document.getElementById("password");
+    const toggleBtn = document.getElementById("password-toggle");
+
+    if (toggleBtn && passwordInput) {
+      toggleBtn.addEventListener("click", () => {
+        const isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+        toggleBtn.innerHTML = `<i class="fas fa-eye${isPassword ? '-slash' : ''}"></i>`;
+      });
+    }
+  });
+</script>
+
 
   </body>
 </html>
