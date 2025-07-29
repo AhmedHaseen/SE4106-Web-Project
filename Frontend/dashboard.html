@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Dashboard - SaveBite</title>
+    <link rel="icon" type="image/png" href="images/logo.ico" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header id="main-header">
+      <div class="container header-container">
+        <div class="logo">
+          <a href="index.html">
+            <img src="images/logo.png" alt="SaveBite Logo" />
+            <h1><span class="highlight">Save</span>Bite</h1>
+          </a>
+        </div>
+        <nav id="main-nav">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="listings.html">Food Listings</a></li>
+            <li
+              id="dashboard-link"
+              class="auth-required business-only admin-only"
+            >
+              <a href="dashboard.html" class="active">Dashboard</a>
+            </li>
+            <li id="admin-link" class="auth-required admin-only">
+              <a href="admin.html">Admin Panel</a>
+            </li>
+            <li id="cart-link" class="auth-required customer-only">
+              <a href="cart.html"
+                >Cart <span id="cart-count" class="cart-count">0</span></a
+              >
+            </li>
+            <li id="login-link" class="auth-not-required">
+              <a href="login.html">Login</a>
+            </li>
+            <li id="register-link" class="auth-not-required">
+              <a href="register.html">Register</a>
+            </li>
+            <li id="logout-link" class="auth-required">
+              <a href="#" id="logout-btn">Logout</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="dashboard-container">
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-user">
+          <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-info">
+            <h3 id="user-name">Business Name</h3>
+            <p id="user-email">email@example.com</p>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active" data-tab="overview">
+              <i class="fas fa-chart-line"></i> Overview
+            </li>
+            <li data-tab="listings"><i class="fas fa-list"></i> My Listings</li>
+            <li data-tab="add-listing">
+              <i class="fas fa-plus-circle"></i> Add New Listing
+            </li>
+            <li data-tab="orders">
+              <i class="fas fa-shopping-bag"></i> Orders
+            </li>
+            <li data-tab="settings"><i class="fas fa-cog"></i> Settings</li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main class="dashboard-content">
+        <!-- Overview Tab -->
+        <section id="overview" class="dashboard-tab active">
+          <h2>Dashboard Overview</h2>
+          <div class="overview-stats">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-apple-alt"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="active-listings-count">0</h3>
+                <p>Active Listings</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="pending-orders-count">0</h3>
+                <p>Pending Orders</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-leaf"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="food-saved-count">0</h3>
+                <p>kg Food Saved</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="recent-activity">
+            <h3>Recent Activity</h3>
+            <div class="activity-list" id="activity-list">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+
+          <div class="expiring-soon">
+            <h3>Listings Expiring Soon</h3>
+            <div class="expiring-list" id="expiring-list">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- My Listings Tab -->
+        <section id="listings" class="dashboard-tab">
+          <div class="tab-header">
+            <h2>My Listings</h2>
+            <button id="add-listing-btn" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add New Listing
+            </button>
+          </div>
+
+          <div class="listings-controls">
+            <div class="search-bar">
+              <input
+                type="text"
+                id="listings-search"
+                placeholder="Search listings..."
+              />
+              <button><i class="fas fa-search"></i></button>
+            </div>
+
+            <div class="filter-select">
+              <select id="listings-filter">
+                <option value="all">All Listings</option>
+                <option value="active">Active</option>
+                <option value="sold">Sold Out</option>
+                <option value="expired">Expired</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="listings-table-container">
+            <table class="listings-table">
+              <thead>
+                <tr>
+                  <th>Food Item</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Expiry Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="listings-table-body">
+                <!-- Will be populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="no-listings" id="no-listings" style="display: none">
+            <i class="fas fa-box-open"></i>
+            <h3>No listings found</h3>
+            <p>Create your first listing to start reducing food waste</p>
+            <button id="create-first-listing" class="btn btn-primary">
+              Create Listing
+            </button>
+          </div>
+        </section>
+
+        <!-- Add New Listing Tab -->
+        <section id="add-listing" class="dashboard-tab">
+          <h2>Add New Listing</h2>
+          <form id="listing-form" class="listing-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="food-name">Food Name</label>
+                <input type="text" id="food-name" name="foodName" required />
+              </div>
+              <div class="form-group">
+                <label for="food-category">Category</label>
+                <select id="food-category" name="category" required>
+                  <option value="meals">Prepared Meals</option>
+                  <option value="bakery">Bakery</option>
+                  <option value="produce">Produce</option>
+                  <option value="dairy">Dairy</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="original-price">Original Price ($)</label>
+                <input
+                  type="number"
+                  id="original-price"
+                  name="originalPrice"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="discounted-price">Discounted Price ($)</label>
+                <input
+                  type="number"
+                  id="discounted-price"
+                  name="discountedPrice"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="quantity">Quantity Available</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="expiry-date">Expiry Date</label>
+                <input
+                  type="datetime-local"
+                  id="expiry-date"
+                  name="expiryDate"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="image-url">Image URL</label>
+              <input
+                type="url"
+                id="image-url"
+                name="imageUrl"
+                placeholder="https://example.com/image.jpg"
+                required
+              />
+              <p class="form-help">
+                Enter a URL for an image of your food item
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-container">
+                <input type="checkbox" id="pickup-only" name="pickupOnly" />
+                <span class="checkmark"></span>
+                Pickup only (no delivery)
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label for="pickup-address">Pickup Address</label>
+              <input
+                type="text"
+                id="pickup-address"
+                name="pickupAddress"
+                required
+              />
+            </div>
+
+            <div class="form-action">
+              <button
+                type="button"
+                id="listing-cancel"
+                class="btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Create Listing
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Orders Tab -->
+        <section id="orders" class="dashboard-tab">
+          <h2>Customer Orders</h2>
+
+          <div class="orders-controls">
+            <div class="filter-select">
+              <select id="orders-filter">
+                <option value="all">All Orders</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="orders-container" id="orders-container">
+            <!-- Will be populated dynamically -->
+          </div>
+
+          <div class="no-orders" id="no-orders" style="display: none">
+            <i class="fas fa-shopping-bag"></i>
+            <h3>No orders yet</h3>
+            <p>When customers place orders, they will appear here</p>
+          </div>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="settings" class="dashboard-tab">
+          <h2>Business Settings</h2>
+
+          <form id="business-settings-form" class="settings-form">
+            <div class="form-section">
+              <h3>Business Information</h3>
+
+              <div class="form-group">
+                <label for="business-name">Business Name</label>
+                <input
+                  type="text"
+                  id="business-name"
+                  name="businessName"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="business-type">Business Type</label>
+                <select id="business-type" name="businessType" required>
+                  <option value="restaurant">Restaurant</option>
+                  <option value="cafe">Café</option>
+                  <option value="bakery">Bakery</option>
+                  <option value="grocery">Grocery Store</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="business-address">Business Address</label>
+                <input
+                  type="text"
+                  id="business-address"
+                  name="businessAddress"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="business-description">About Your Business</label>
+                <textarea
+                  id="business-description"
+                  name="businessDescription"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Contact Information</h3>
+
+              <div class="form-group">
+                <label for="contact-name">Contact Name</label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="contactName"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="contact-email">Contact Email</label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="contactEmail"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="contact-phone">Contact Phone</label>
+                <input
+                  type="tel"
+                  id="contact-phone"
+                  name="contactPhone"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Password</h3>
+
+              <div class="form-group">
+                <label for="current-password">Current Password</label>
+                <input
+                  type="password"
+                  id="current-password"
+                  name="currentPassword"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="new-password">New Password</label>
+                <input type="password" id="new-password" name="newPassword" />
+              </div>
+
+              <div class="form-group">
+                <label for="confirm-password">Confirm New Password</label>
+                <input
+                  type="password"
+                  id="confirm-password"
+                  name="confirmPassword"
+                />
+              </div>
+            </div>
+
+            <div class="form-action">
+              <button type="submit" class="btn btn-primary">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <!-- Edit Listing Modal -->
+    <div id="edit-listing-modal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>Edit Listing</h2>
+        <form id="edit-listing-form" class="listing-form">
+          <input type="hidden" id="edit-listing-id" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="edit-food-name">Food Name</label>
+              <input type="text" id="edit-food-name" name="foodName" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-food-category">Category</label>
+              <select id="edit-food-category" name="category" required>
+                <option value="meals">Prepared Meals</option>
+                <option value="bakery">Bakery</option>
+                <option value="produce">Produce</option>
+                <option value="dairy">Dairy</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit-original-price">Original Price ($)</label>
+              <input
+                type="number"
+                id="edit-original-price"
+                name="originalPrice"
+                step="0.01"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="edit-discounted-price">Discounted Price ($)</label>
+              <input
+                type="number"
+                id="edit-discounted-price"
+                name="discountedPrice"
+                step="0.01"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="edit-quantity">Quantity Available</label>
+              <input
+                type="number"
+                id="edit-quantity"
+                name="quantity"
+                min="0"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="edit-expiry-date">Expiry Date</label>
+              <input
+                type="datetime-local"
+                id="edit-expiry-date"
+                name="expiryDate"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-description">Description</label>
+            <textarea
+              id="edit-description"
+              name="description"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-image-url">Image URL</label>
+            <input type="url" id="edit-image-url" name="imageUrl" required />
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-container">
+              <input type="checkbox" id="edit-pickup-only" name="pickupOnly" />
+              <span class="checkmark"></span>
+              Pickup only (no delivery)
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="edit-pickup-address">Pickup Address</label>
+            <input
+              type="text"
+              id="edit-pickup-address"
+              name="pickupAddress"
+              required
+            />
+          </div>
+
+          <div class="form-action">
+            <button type="button" id="delete-listing" class="btn btn-danger">
+              Delete Listing
+            </button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2><span class="highlight">Save</span>Bite</h2>
+            <p>Fighting food waste, one bite at a time.</p>
+          </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="listings.html">Food Listings</a></li>
+              <li><a href="about.html">About Us</a></li>
+              
+            </ul>
+          </div>
+          <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-envelope"></i><a href="mailto:">haseen2002hsn@gmail.com</a></p>
+            <p><i class="fas fa-phone"></i><a href="tel:+">+94 767502206</a></p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 SaveBite. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/utils.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script src="js/api.js" type="module"></script>
+    <script src="js/listing.js" type="module"></script>
+    <script src="js/dashboard.js" type="module"></script>
+  </body>
+</html>
